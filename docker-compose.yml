@@ -1,0 +1,31 @@
+# docker-compose -f docker-compose.yml up -d
+version: '3'
+services:
+  app:
+    build: 
+      dockerfile: dockerfile-php
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_USER: example_user
+      DB_PASSWORD: example_password
+      DB_DATABASE: example_database
+  db:
+    build: 
+      dockerfile: dockerfile-mysql
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: example_root_password
+      MYSQL_USER: example_user
+      MYSQL_PASSWORD: example_password
+      MYSQL_DATABASE: example_database
+volumes:
+  db:

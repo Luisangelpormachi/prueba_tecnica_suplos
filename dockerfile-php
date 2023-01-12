@@ -1,0 +1,28 @@
+# Instalar Composer
+FROM  php:7.4-apache
+
+# Instalar dependencias
+
+RUN apt-get update && apt-get install -y \
+    git \
+    zip \
+    unzip \
+    libzip-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev
+
+# Instalar extensiones
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Instalar NodeJS
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+# Ejecutar el instalador de Composer
+# RUN composer install
