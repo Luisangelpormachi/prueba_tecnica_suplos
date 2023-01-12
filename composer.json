@@ -3,7 +3,8 @@
     "description": "prueba tecnica para desarrollador full-stack",
     "require": {
         "illuminate/database": "^8.83",
-        "easy-projects/simple-router": "^7.3"
+        "easy-projects/simple-router": "^7.3",
+        "vlucas/valitron": "^1.4"
     },
     "autoload": {
         "psr-4": {
