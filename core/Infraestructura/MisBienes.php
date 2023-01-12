@@ -4,6 +4,7 @@ namespace Core\Infraestructura;
 use Core\Models\DataBienes;
 use EasyProjects\SimpleRouter\Request as Request;
 use EasyProjects\SimpleRouter\Response as Response;
+use Illuminate\Support\Arr;
 use Valitron\Validator as V;
 
 class MisBienes {
@@ -33,6 +34,7 @@ class MisBienes {
             
             // Obtener todos los registros
             $filter = $request->body;
+            $filter->inicial = $filter->inicial === 'true'? true : false;
 
             // Crear una nueva instancia de Valitron
             V::lang('es');
@@ -40,10 +42,12 @@ class MisBienes {
                 'ciudad' => $filter->ciudad, 
                 'tipo' => $filter->tipo,
                 'direccion' => $filter->direccion,
-                'precio' => json_decode($filter->precio)
+                'precios' => json_decode($filter->precios),
+                'inicial' => $filter->inicial,
             ));
-            $v->rule('array', 'precio');   
-            $v->rule('regex', array('ciudad', 'tipo', 'direccion'), '/^[a-zA-Z0-9\s]+$/');   
+            $v->rule('array', 'precios');
+            $v->rule('boolean', 'inicial');    
+            $v->rule('regex', array('ciudad', 'tipo', 'direccion'), '/^[a-zA-Z0-9\s.,:;-_]*$/');   
 
             if ($v->validate()) {
 
@@ -51,7 +55,7 @@ class MisBienes {
                 $filter->ciudad = htmlspecialchars($filter->ciudad, ENT_QUOTES, 'UTF-8');
                 $filter->tipo = htmlspecialchars($filter->tipo, ENT_QUOTES, 'UTF-8');
                 $filter->direccion = htmlspecialchars($filter->direccion, ENT_QUOTES, 'UTF-8');
-                $filter->precio = htmlspecialchars($filter->precio, ENT_QUOTES, 'UTF-8');
+                $filter->precios = json_decode($filter->precios);
 
                 $bienes = DataBienes::where(function($query) use ($filter) {
                     if ($filter->ciudad !== '') {
@@ -64,12 +68,35 @@ class MisBienes {
                         $query->where('direccion', 'like', '%' . $filter->direccion. '%');
                     }
                 })
+                ->whereRaw("cast(replace(replace(precio, ',', ''), '$', '') as decimal(10,2)) between ? and ?", $filter->precios)
                 ->get();
 
                 $resp = [
                     "message" => 'bienes cargadas correctamente',
                     "data" => $bienes,
+                    "filter" => $filter
                 ];
+
+                //obtener filtros si es que se carga por primera vez
+                if($filter->inicial){
+
+                    $ciudades = array();
+                    $tipos = array();
+
+                    foreach($bienes as $bien) {
+
+                        if(!in_array($bien->ciudad, $ciudades, true)){
+                            array_push($ciudades, $bien->ciudad);
+                        }
+
+                        if(!in_array($bien->tipo, $tipos, true)){
+                            array_push($tipos, $bien->tipo);
+                        }
+                    }
+
+                    $resp["ciudades"] = $ciudades;
+                    $resp["tipos"] = $tipos;
+                }
 
                 $response->status(200)->send($resp);
 

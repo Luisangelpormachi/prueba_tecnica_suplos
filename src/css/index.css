@@ -178,3 +178,35 @@ video#vidFondo {
   margin-left: 10px;
   float: right;
 }
+
+
+/* Estilos de adicionales */
+.box-bienes {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+}
+
+button.btn-guardar {
+  border: none;
+  align-self: flex-end;
+  color: #F2F2F2;
+  background: #648C7D;
+  margin: 5px 0px;
+}
+
+button.btn-eliminar {
+  border: none;
+  color: #F2F2F2;
+  background: #da5959;
+  margin: 5px 0px;
+}
+
+.img-bienes {
+  margin: 1em;
+}
+
+.img-bienes img {
+  width: 200px;
+}

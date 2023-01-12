@@ -29,7 +29,7 @@
                     </div>
                     <div class="filtroCiudad input-field">
                         <p><label for="selectCiudad">Dirección:</label><br></p>
-                        <input type="text" value="" placeholder="Escribe una dirección" />
+                        <input type="text" value="" name="direccion" placeholder="Escribe una dirección" />
                     </div>
                     <div class="filtroCiudad input-field">
                         <p><label for="selectCiudad">Ciudad:</label><br></p>
