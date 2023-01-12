@@ -2,7 +2,8 @@
     "name": "suplos/prueba-tecnica",
     "description": "prueba tecnica para desarrollador full-stack",
     "require": {
-        "illuminate/database": "^8.83"
+        "illuminate/database": "^8.83",
+        "easy-projects/simple-router": "^7.3"
     },
     "autoload": {
         "psr-4": {

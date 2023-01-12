@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta id="base_url" content="<?= base_url ?>">
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="<?= base_url ?>src/css/materialize.min.css" media="screen,projection" />
     <link type="text/css" rel="stylesheet" href="<?= base_url ?>src/css/customColors.css" media="screen,projection" />
