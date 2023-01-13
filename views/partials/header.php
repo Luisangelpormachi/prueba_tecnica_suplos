@@ -16,6 +16,11 @@
 </head>
 
 <body>
+
+    <div class="content-loading-spinner">
+        <div class="loading-spinner"></div>
+    </div>
+
     <video src="./src/video/video.mp4" id="vidFondo"></video>
     <div class="contenedor">
         <div class="card rowTitulo">

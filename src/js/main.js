@@ -50,8 +50,14 @@ function getDataList() {
 
     async function obtenerBienesDisponibles(inicial = false) {
 
+        //iniciar carga
+        loadingSpinner.start(true);
+
+        //desabilitar acciones
+        actions.disabled();
+
         try {   
-            
+
             const form = $("#formulario")[0];
 
             const params = {
@@ -63,7 +69,7 @@ function getDataList() {
             };
             
             const resp = await peticionPostAjax(params);
-            
+
             console.log(resp);
             
             let htmlBienesDisponibles = resp.data.map(function(item){
@@ -86,9 +92,23 @@ function getDataList() {
                 $("#selectTipo").append(selectTipos);
             }
 
+            // setTimeout(() => {
+                //finalizar carga
+                loadingSpinner.stop(true);
+                //habilitar acciones
+                actions.enable();
+            // }, 10000);
+           
 
         } catch (error) {
             messageError(error);
+            
+            // setTimeout(() => {
+                //finalizar carga
+                loadingSpinner.stop(true);
+                //habilitar acciones
+                actions.enable();
+            // }, 10000);       
         }
     
     }
@@ -98,17 +118,20 @@ function getDataList() {
         const html = 
         `<div class='box-bienes'>
             <div class='img-bienes'>
-                <img src="./src/img/home.jpg" alt=''>
+                    <img src="./src/img/home.jpg" alt=''>
             </div>
-            <div>
-                <p><b>Direccion:</b> ${data.direccion} </br>
-                <b>Ciudad:</b> ${data.ciudad} </br>
-                <b>Telefono:</b> ${data.telefono} </br>
-                <b>Codigo postal:</b> ${data.codigo_postal} </br>
-                <b>Tipo:</b> ${data.tipo}o </br>
-                <b>Precio:</b> ${data.precio} </br>
+            <div class='content-bienes'>
+                <div class="bienes-descripcion">
+                    <p><b>Direccion:</b> ${data.direccion} </br>
+                    <b>Ciudad:</b> ${data.ciudad} </br>
+                    <b>Telefono:</b> ${data.telefono} </br>
+                    <b>Codigo postal:</b> ${data.codigo_postal} </br>
+                    <b>Tipo:</b> ${data.tipo}o </br>
+                    <b>Precio:</b> ${data.precio} </br>
+                </div>
+                <button type='submit' class='btn-guardar' id="${data.id}">Guardar</button>
             </div>
-            <button type='submit' class='btn-guardar' id="${data.id}">Guardar</button>
+            <div class="divider"></div>
         </div>`;
 
         return html;
@@ -122,6 +145,18 @@ function getDataList() {
 
     });
 
+    $("#tabs").tabs({
+        activate: function( event, ui ) {
+            const tabIndex = ui.newTab.index();
+            if (tabIndex === 0) { //Bienes disponibles
+                obtenerBienesDisponibles();
+                console.log("Bienes disponibles");
+            } else if (tabIndex === 1) { //Mis disponibles
+                console.log("Mis Bienes");
+            }
+        }
+    });
+      
     $(document).on('click', '.btn-guardar', function(e){
         console.log("Guardar en favoritos");
         console.log(e.target.id);

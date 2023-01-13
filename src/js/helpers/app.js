@@ -41,3 +41,39 @@ function messageError(xhr) {
     }
 }
 
+const loadingSpinner = {
+
+    contentSpinner: $(".content-loading-spinner"),
+
+    start : () => {
+        loadingSpinner.contentSpinner.addClass("loading-spinner-visible");
+    },
+
+    stop: () => {
+        loadingSpinner.contentSpinner.removeClass("loading-spinner-visible");
+    }
+    
+}
+
+const actions = {
+    disabled : () => {
+        //inputs y buttons
+        $("input").attr("disabled", "disabled");
+        $("button").attr("disabled", "disabled");
+        $("select").attr("disabled", "disabled");
+        //tabs
+        $("#tabs").tabs({
+            disabled: [0, 1]
+        })
+    },
+    enable : () => {
+        //inputs y buttons
+        $("input").attr("disabled", false);
+        $("button").attr("disabled", false);
+        $("select").attr("disabled", false);
+        //tabs
+        $("#tabs").tabs({
+            disabled: []
+        })
+    }
+}

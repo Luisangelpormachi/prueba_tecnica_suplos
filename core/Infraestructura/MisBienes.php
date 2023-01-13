@@ -32,6 +32,8 @@ class MisBienes {
 
         try {
             
+            sleep(5);
+
             // Obtener todos los registros
             $filter = $request->body;
             $filter->inicial = $filter->inicial === 'true'? true : false;

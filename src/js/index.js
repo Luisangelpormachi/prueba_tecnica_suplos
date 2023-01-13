@@ -39,7 +39,7 @@ function playVideoOnScroll(){
        
      } else {
         //this.rewind(1.0, video, intervalRewind);
-        video.play();
+        // video.play();
      }
      ultimoScroll = scrollActual;
     })
