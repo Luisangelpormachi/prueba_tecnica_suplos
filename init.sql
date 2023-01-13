@@ -4,14 +4,14 @@ CREATE DATABASE IF NOT EXISTS `prueba_tecnica` DEFAULT CHARACTER SET utf8 COLLAT
 USE `prueba_tecnica`;
 
 CREATE TABLE IF NOT EXISTS data_bienes (
-   id            INTEGER  NOT NULL PRIMARY KEY AUTO_INCREMENT
-  ,direccion     VARCHAR(35) NOT NULL
-  ,ciudad        VARCHAR(11) NOT NULL
-  ,telefono      VARCHAR(12) NOT NULL
-  ,codigo_postal VARCHAR(9) NOT NULL
-  ,tipo          VARCHAR(13) NOT NULL
-  ,precio        VARCHAR(7) NOT NULL
-);
+  id            INTEGER  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  direccion     VARCHAR(35) NOT NULL,
+  ciudad        VARCHAR(11) NOT NULL,
+  telefono      VARCHAR(12) NOT NULL,
+  codigo_postal VARCHAR(9) NOT NULL,
+  tipo          VARCHAR(13) NOT NULL,
+  precio        VARCHAR(7) NOT NULL
+) ENGINE=InnoDB;
 
 INSERT INTO data_bienes(id,direccion,ciudad,telefono,codigo_postal,tipo,precio) VALUES (1,'ap #549-7395 ut rd.','new york','334-052-0954','85328','casa','$30,746');
 INSERT INTO data_bienes(id,direccion,ciudad,telefono,codigo_postal,tipo,precio) VALUES (2,'p.o. box 657, 9831 cursus st.','orlando','488-441-5521','04436','casa de campo','$71,045');
@@ -113,3 +113,9 @@ INSERT INTO data_bienes(id,direccion,ciudad,telefono,codigo_postal,tipo,precio) 
 INSERT INTO data_bienes(id,direccion,ciudad,telefono,codigo_postal,tipo,precio) VALUES (98,'967-7675 a, rd.','los angeles','751-125-7876','34981','apartamento','$6,672');
 INSERT INTO data_bienes(id,direccion,ciudad,telefono,codigo_postal,tipo,precio) VALUES (99,'227-6771 ut street','houston','262-186-7762','7131','casa de campo','$17,160');
 INSERT INTO data_bienes(id,direccion,ciudad,telefono,codigo_postal,tipo,precio) VALUES (100,'p.o. box 432, 4652 proin ave','washington','113-637-2816','598072','casa','$42,804');
+
+CREATE TABLE IF NOT EXISTS mis_bienes (
+  id            INTEGER  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  data_bienes_id  INTEGER NOT NULL,
+  FOREIGN KEY (data_bienes_id) REFERENCES data_bienes(id)
+) ENGINE=InnoDB;

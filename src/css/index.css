@@ -187,19 +187,25 @@ video#vidFondo {
   flex-wrap: wrap;
 }
 
-button.btn-guardar {
+button.btn__ {
   border: none;
   align-self: flex-end;
   color: #F2F2F2;
-  background: #648C7D;
+  background: #6d6d6d;
   margin: 5px 0px;
+  transition: all 0.4s ease;
 }
 
-button.btn-eliminar {
-  border: none;
-  color: #F2F2F2;
-  background: #da5959;
-  margin: 5px 0px;
+button.btn__:active {
+  transform: scale(1.2);
+}
+
+button.btn-guardar {
+  background: #648C7D;
+}
+
+button.btn-quitar {
+  background: #c93524;
 }
 
 .img-bienes {

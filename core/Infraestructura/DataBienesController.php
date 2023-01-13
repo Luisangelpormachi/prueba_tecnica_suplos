@@ -4,10 +4,9 @@ namespace Core\Infraestructura;
 use Core\Models\DataBienes;
 use EasyProjects\SimpleRouter\Request as Request;
 use EasyProjects\SimpleRouter\Response as Response;
-use Illuminate\Support\Arr;
 use Valitron\Validator as V;
 
-class MisBienes {
+class DataBienesController {
 
     public function __construct() {
     }
@@ -32,13 +31,11 @@ class MisBienes {
 
         try {
             
-            sleep(5);
-
             // Obtener todos los registros
             $filter = $request->body;
             $filter->inicial = $filter->inicial === 'true'? true : false;
 
-            // Crear una nueva instancia de Valitron
+            // Crear una nueva instancia de Valitron para validar campos
             V::lang('es');
             $v = new V(array(
                 'ciudad' => $filter->ciudad, 
@@ -74,7 +71,7 @@ class MisBienes {
                 ->get();
 
                 $resp = [
-                    "message" => 'bienes cargadas correctamente',
+                    "message" => 'información cargada correctamente',
                     "data" => $bienes,
                     "filter" => $filter
                 ];

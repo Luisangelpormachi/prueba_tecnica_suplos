@@ -3,14 +3,14 @@
     require_once __DIR__."/vendor/autoload.php";
     require_once __DIR__.'/core/Models/dbEloquent.php';
 
-    use Core\Infraestructura\MisBienes;
+    use Core\Infraestructura\DataBienesController;
+    use Core\Infraestructura\MisBienesController;
     use EasyProjects\SimpleRouter\Router as Router;
     use EasyProjects\SimpleRouter\Request as Request;
     use EasyProjects\SimpleRouter\Response as Response;
 
     $router = new Router();
 
-    
     $router->get("/", function(Request $req, Response $res){
        
         require_once './core/parameters.php';
@@ -21,12 +21,43 @@
     });
 
     $router->post("/bienes/disponibles", function(Request $req, Response $res){
-        
-        $misBienes = new MisBienes();
-        $responseData = $misBienes->obtenerTodos($req, $res);
+
+        sleep(1);
+
+        $dataBienes = new DataBienesController();
+        $responseData = $dataBienes->obtenerTodos($req, $res);
         echo json_encode($responseData);
 
     });
 
+    $router->get("/bienes/misBienes", function(Request $req, Response $res){
+
+        sleep(1);
+
+        $misBienes = new MisBienesController();
+        $responseData = $misBienes->obtenerTodos($req, $res);
+        echo json_encode($responseData);
+
+    });
+    
+    $router->post("/bienes/misBienes/guardar", function(Request $req, Response $res){
+
+        sleep(1);
+
+        $dataBienes = new MisBienesController();
+        $responseData = $dataBienes->create($req, $res);
+        echo json_encode($responseData);
+
+    });
+
+    $router->post("/bienes/misBienes/eliminar", function(Request $req, Response $res){
+
+        sleep(1);
+
+        $dataBienes = new MisBienesController();
+        $responseData = $dataBienes->delete($req, $res);
+        echo json_encode($responseData);
+
+    });
 
 ?>

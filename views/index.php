@@ -12,7 +12,7 @@
     </div>
 
     <div id="tabs-2">
-        <div class="colContenido" id="divResultadosBusqueda">
+        <div class="colContenido" id="divResultadosBusquedaMisBienes">
             <div class="tituloContenido card" style="justify-content: center;">
                 <h5>Bienes guardados:</h5>
             </div>

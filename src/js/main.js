@@ -68,9 +68,7 @@ function getDataList() {
                 inicial: inicial
             };
             
-            const resp = await peticionPostAjax(params);
-
-            console.log(resp);
+            const resp = await peticionPostAjax(params, 'bienes/disponibles');
             
             let htmlBienesDisponibles = resp.data.map(function(item){
                 return plantillaBienesDisponibles(item);
@@ -92,26 +90,124 @@ function getDataList() {
                 $("#selectTipo").append(selectTipos);
             }
 
-            // setTimeout(() => {
-                //finalizar carga
-                loadingSpinner.stop(true);
-                //habilitar acciones
-                actions.enable();
-            // }, 10000);
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
            
 
         } catch (error) {
             messageError(error);
             
-            // setTimeout(() => {
-                //finalizar carga
-                loadingSpinner.stop(true);
-                //habilitar acciones
-                actions.enable();
-            // }, 10000);       
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
         }
     
-    }
+    };
+
+    async function obtenerBienesMisBienes() {
+
+        //iniciar carga
+        loadingSpinner.start(true);
+
+        //desabilitar acciones
+        actions.disabled();
+
+        try {   
+            
+            const resp = await peticionGetAjax('bienes/misBienes');
+
+            let htmlMisBienes = resp.data.map(function(item){
+                return plantillaMisBienes(item.data_bienes);
+            }).join("");
+
+            $("#divResultadosBusquedaMisBienes .card").html(`<h5>Bienes guardados:</h5>${htmlMisBienes}`);
+
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+           
+        } catch (error) {
+            messageError(error);
+            
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+        }
+    
+    };
+
+    async function guardarMisBienes(id) {
+
+        //iniciar carga
+        loadingSpinner.start(true);
+
+        //desabilitar acciones
+        actions.disabled();
+
+        try {   
+            
+            const params = {
+                data_bienes_id: id
+            }; 
+
+            const resp = await peticionPostAjax(params, 'bienes/misBienes/guardar');
+            messageExito(resp.message);
+
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+           
+        } catch (error) {
+            messageError(error);
+            
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+        }
+    
+    };
+
+    async function eliminarMisBienes(id) {
+
+        //iniciar carga
+        loadingSpinner.start(true);
+
+        //desabilitar acciones
+        actions.disabled();
+
+        try {   
+            
+            const params = {
+                data_bienes_id: id
+            }; 
+
+            const resp = await peticionPostAjax(params, 'bienes/misBienes/eliminar');
+            messageExito(resp.message);
+
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+            
+            obtenerBienesMisBienes();
+
+        } catch (error) {
+            messageError(error);
+            
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+        }
+    
+    };
 
     function plantillaBienesDisponibles(data) {
 
@@ -129,13 +225,37 @@ function getDataList() {
                     <b>Tipo:</b> ${data.tipo}o </br>
                     <b>Precio:</b> ${data.precio} </br>
                 </div>
-                <button type='submit' class='btn-guardar' id="${data.id}">Guardar</button>
+                <button type='submit' class='btn__ btn-guardar btn-guardar-misBienes' id="${data.id}">Guardar</button>
             </div>
             <div class="divider"></div>
         </div>`;
 
         return html;
-    }
+    };
+
+    function plantillaMisBienes(data) {
+
+        const html = 
+        `<div class='box-bienes'>
+            <div class='img-bienes'>
+                    <img src="./src/img/home.jpg" alt=''>
+            </div>
+            <div class='content-bienes'>
+                <div class="bienes-descripcion">
+                    <p><b>Direccion:</b> ${data.direccion} </br>
+                    <b>Ciudad:</b> ${data.ciudad} </br>
+                    <b>Telefono:</b> ${data.telefono} </br>
+                    <b>Codigo postal:</b> ${data.codigo_postal} </br>
+                    <b>Tipo:</b> ${data.tipo}o </br>
+                    <b>Precio:</b> ${data.precio} </br>
+                </div>
+                <button type='submit' class='btn__ btn-quitar btn-eliminar-misBienes' id="${data.id}">Quitar</button>
+            </div>
+            <div class="divider"></div>
+        </div>`;
+
+        return html;
+    };
     
     /* Eventos */
     $("#formulario").submit(function(e) {
@@ -152,15 +272,23 @@ function getDataList() {
                 obtenerBienesDisponibles();
                 console.log("Bienes disponibles");
             } else if (tabIndex === 1) { //Mis disponibles
+                obtenerBienesMisBienes();
                 console.log("Mis Bienes");
             }
         }
     });
       
-    $(document).on('click', '.btn-guardar', function(e){
-        console.log("Guardar en favoritos");
-        console.log(e.target.id);
-    })
+    $(document).on('click', '.btn-guardar-misBienes', function(e){
+        
+        guardarMisBienes(e.target.id);
+
+    });
+
+    $(document).on('click', '.btn-eliminar-misBienes', function(e){
+        
+        eliminarMisBienes(e.target.id);
+
+    });
     
 
 })();

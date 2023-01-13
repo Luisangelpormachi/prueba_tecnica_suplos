@@ -1,45 +1,18 @@
 'use strict';
 
-const baseUrl = document.getElementById("base_url").content;
-
-function peticionPostAjax(params) {
-
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: baseUrl+'bienes/disponibles',
-            type: 'POST',
-            data: params,
-            dataType: 'json',
-            success: function (response) {
-                resolve(response);
-            },
-            error: function (xhr, error) {
-                reject(xhr);
-            }
-        });
-    });
-}
-
-function messageError(xhr) {
-
-    switch (xhr.status) {
-
-        case 422:
-
-            for(let element in xhr.responseJSON.errors) {
-                console.log(xhr.responseJSON.errors[element][0]);
-            }
-
-        break;
-
-        case 500:
-            console.log(xhr.responseJSON.message)
-        break;
-
-        default:
-            console.log("Ocurrio un error inesperado");
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
-}
+})
+  
+const baseUrl = document.getElementById("base_url").content;
 
 const loadingSpinner = {
 
@@ -77,3 +50,94 @@ const actions = {
         })
     }
 }
+
+function peticionPostAjax(params, url) {
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: baseUrl+url,
+            type: 'POST',
+            data: params,
+            dataType: 'json',
+            success: function (response) {
+                resolve(response);
+            },
+            error: function (xhr, error) {
+                console.log(xhr)
+                reject(xhr);
+            }
+        });
+    });
+}
+
+function peticionGetAjax(url) {
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: baseUrl+url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                resolve(response);
+            },
+            error: function (xhr, error) {
+                reject(xhr);
+            }
+        });
+    });
+}
+
+function messageExito(message) {
+     
+    Toast.fire({
+        icon: 'success',
+        title: message
+    });
+
+}
+
+function messageError(xhr) {
+
+    switch (xhr.status) {
+
+        case 409:
+            Toast.fire({
+                icon: 'error',
+                title: xhr.responseJSON.message
+            });
+        break;
+
+        case 422:
+
+            let ul = document.createElement('ul');
+
+            for(let element in xhr.responseJSON.errors) {
+                let error = xhr.responseJSON.errors[element][0];
+                let li = document.createElement('li');
+                li.innerHTML = error;
+                ul.appendChild(li);
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: xhr.responseJSON.message,
+                html: ul
+            });
+
+        break;
+
+        case 500:
+            Toast.fire({
+                icon: 'error',
+                title: xhr.responseJSON.message
+            });
+        break;
+
+        default:
+            Toast.fire({
+                icon: 'error',
+                title: 'Ocurrio un error inesperado'
+            });
+    }
+}
+

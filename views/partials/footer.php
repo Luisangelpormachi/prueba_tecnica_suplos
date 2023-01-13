@@ -1,4 +1,5 @@
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
 <script type="text/javascript" src="<?= base_url ?>src/js/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="<?= base_url ?>src/js/helpers/app.js"></script>
 <script type="text/javascript" src="<?= base_url ?>src/js/ion.rangeSlider.min.js"></script>
