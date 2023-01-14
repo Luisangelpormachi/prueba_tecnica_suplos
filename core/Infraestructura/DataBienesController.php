@@ -29,6 +29,16 @@ class DataBienesController {
                 'precio' => $data->precio
             ));
             $v->rule('required', ['direccion', 'ciudad', 'telefono', 'codigo_postal', 'tipo', 'precio']);
+            $v->rules([
+                'lengthMax' => [
+                    ['direccion', 35],
+                    ['ciudad', 11],
+                    ['telefono', 12],
+                    ['codigo_postal', 9],
+                    ['tipo', 13],
+                    ['precio', 7]
+                ]
+            ]);
 
             if ($v->validate()) {
 
@@ -149,6 +159,16 @@ class DataBienesController {
             ));
             $v->rule('required', ['id', 'direccion', 'ciudad', 'telefono', 'codigo_postal', 'tipo', 'precio']);
             $v->rule('integer', 'id');
+            $v->rules([
+                'lengthMax' => [
+                    ['direccion', 35],
+                    ['ciudad', 11],
+                    ['telefono', 12],
+                    ['codigo_postal', 9],
+                    ['tipo', 13],
+                    ['precio', 7]
+                ]
+            ]);
 
             if ($v->validate()) {
 
@@ -168,7 +188,13 @@ class DataBienesController {
                     $bien->fill((array)$data);
                     $bien->update();
                 }else{
-                    throw new \Exception('El registro no existe!');
+                    
+                    $resp = [
+                        "message" => 'El registro no existe!',
+                    ];
+            
+                    $response->status(404)->send($resp);
+
                 }
 
                 $resp = [
@@ -226,7 +252,13 @@ class DataBienesController {
                 if($bien){
                     $bien->delete();
                 }else{
-                    throw new \Exception('El registro no existe!');
+                    
+                    $resp = [
+                        "message" => 'El registro no existe!',
+                    ];
+            
+                    $response->status(404)->send($resp);
+
                 }
 
                 $resp = [
