@@ -276,6 +276,16 @@ body {
   cursor: not-allowed;
 }
 
+.colFiltros select {
+  width: 100%;
+}
+
+/* Generales */
+
+select {
+  width: auto;
+}
+
 /* keyframe para la animación */
 @keyframes spin {
   0% { transform: rotate(0deg); }

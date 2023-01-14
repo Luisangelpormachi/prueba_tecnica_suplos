@@ -11,7 +11,7 @@ const Toast = Swal.mixin({
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
-  
+
 const baseUrl = document.getElementById("base_url").content;
 
 const loadingSpinner = {

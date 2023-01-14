@@ -1,5 +1,14 @@
 'use strict';
 
+/* Variables globales */
+let simbolos_moneda = {
+    EUR: "$",
+    COP: "$",
+    PEN: "S/"
+}
+let tasa_cambio = 1;
+let simbolo_moneda = simbolos_moneda['EUR']
+
 /**
  * Solo lectura (No modifica)
 */
@@ -45,8 +54,53 @@ function getDataList() {
 // Configurar todo dentro de este scope
 (async () => {
 
-    // const response_data_coins = await mstCoins();
-    obtenerBienesDisponibles(true);
+    //elegir moneda al iniciar
+    Swal.fire({
+        title: 'Seleccione La moneda',
+        input: 'select',
+        inputOptions: {
+          'monedas': {
+            EUR: 'EUROS',
+            COP: 'PESO COLOMBIANO',
+            PEN: 'SOLES PERUANOS',
+          },
+        },
+        showCancelButton: true,
+        inputValidator: (value) => {
+          return new Promise((resolve) => {
+            
+            inciarProcesos(value);
+            resolve();
+
+          })
+        }
+    })
+
+    async function inciarProcesos(value = null) {
+
+        let monedaActual = "EUR"; 
+    
+        if(monedaActual != value) {
+
+            //iniciar carga
+            loadingSpinner.start(true);
+            //desabilitar acciones
+            actions.disabled();
+
+            const response_data_coins = await mstCoins();
+            tasa_cambio = response_data_coins.rates[value];
+            simbolo_moneda = simbolos_moneda[value];
+
+            //finalizar carga
+            loadingSpinner.stop(true);
+            //habilitar acciones
+            actions.enable();
+
+        }
+
+        obtenerBienesDisponibles(true);
+
+    }    
 
     async function obtenerBienesDisponibles(inicial = false) {
 
@@ -223,7 +277,7 @@ function getDataList() {
                     <b>Telefono:</b> ${data.telefono} </br>
                     <b>Codigo postal:</b> ${data.codigo_postal} </br>
                     <b>Tipo:</b> ${data.tipo}o </br>
-                    <b>Precio:</b> ${data.precio} </br>
+                    <b>Precio:</b> ${formatearPrecio(data.precio)} </br>
                 </div>
                 <button type='submit' class='btn__ btn-guardar btn-guardar-misBienes' id="${data.id}">Guardar</button>
             </div>
@@ -247,7 +301,7 @@ function getDataList() {
                     <b>Telefono:</b> ${data.telefono} </br>
                     <b>Codigo postal:</b> ${data.codigo_postal} </br>
                     <b>Tipo:</b> ${data.tipo}o </br>
-                    <b>Precio:</b> ${data.precio} </br>
+                    <b>Precio:</b> ${formatearPrecio(data.precio)} </br>
                 </div>
                 <button type='submit' class='btn__ btn-quitar btn-eliminar-misBienes' id="${data.id}">Quitar</button>
             </div>
@@ -256,6 +310,24 @@ function getDataList() {
 
         return html;
     };
+
+    function formatearPrecio(price) {
+
+        price = price.replace("$", "").replace(",", "");
+        
+        if(!isNaN(price)){
+
+            let montoDecimal = parseFloat(price);
+            let resultado = montoDecimal * tasa_cambio
+            resultado = resultado.toFixed(2);
+            let resultadoFinal = resultado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            return simbolo_moneda+" "+resultadoFinal;
+
+        } else {
+            return price;
+        }
+    }
     
     /* Eventos */
     $("#formulario").submit(function(e) {
@@ -270,10 +342,8 @@ function getDataList() {
             const tabIndex = ui.newTab.index();
             if (tabIndex === 0) { //Bienes disponibles
                 obtenerBienesDisponibles();
-                console.log("Bienes disponibles");
             } else if (tabIndex === 1) { //Mis disponibles
                 obtenerBienesMisBienes();
-                console.log("Mis Bienes");
             }
         }
     });
