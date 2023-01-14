@@ -81,14 +81,6 @@ class MisBienesController {
 
     }
 
-    public static function obtener($id, Response $response) {
-        // Obtener el registro
-    }
-
-    public static function update($id, $data, Response $response) {
-        // Actualizar el registro
-    }
-
     public static function delete(Request $request, Response $response) {
 
         try {

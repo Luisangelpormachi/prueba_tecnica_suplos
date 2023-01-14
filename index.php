@@ -20,7 +20,19 @@
 
     });
 
-    $router->post("/bienes/disponibles", function(Request $req, Response $res){
+    /* Rutas para bienes */
+
+    $router->get("/bienes/obtener/{id}", function($data, Response $res){
+
+        sleep(1);
+
+        $dataBienes = new DataBienesController();
+        $responseData = $dataBienes->obtener($data->params->id, $res);
+        echo json_encode($responseData);
+
+    });
+
+    $router->post("/bienes/obtenerTodos", function(Request $req, Response $res){
 
         sleep(1);
 
@@ -30,7 +42,39 @@
 
     });
 
-    $router->get("/bienes/misBienes", function(Request $req, Response $res){
+    $router->post("/bienes/crear", function(Request $req, Response $res){
+
+        sleep(1);
+
+        $dataBienes = new DataBienesController();
+        $responseData = $dataBienes->create($req, $res);
+        echo json_encode($responseData);
+
+    });
+
+    $router->put("/bienes/actualizar", function(Request $req, Response $res){
+
+        sleep(1);
+
+        $dataBienes = new DataBienesController();
+        $responseData = $dataBienes->update($req, $res);
+        echo json_encode($responseData);
+
+    });
+
+    $router->delete("/bienes/eliminar", function(Request $req, Response $res){
+
+        sleep(1);
+
+        $dataBienes = new DataBienesController();
+        $responseData = $dataBienes->delete($req, $res);
+        echo json_encode($responseData);
+
+    });
+
+    /* Rutas para mis bienes */
+
+    $router->get("/misBienes/obtenerTodos", function(Request $req, Response $res){
 
         sleep(1);
 
@@ -40,7 +84,7 @@
 
     });
     
-    $router->post("/bienes/misBienes/guardar", function(Request $req, Response $res){
+    $router->post("/misBienes/guardar", function(Request $req, Response $res){
 
         sleep(1);
 
@@ -50,7 +94,7 @@
 
     });
 
-    $router->post("/bienes/misBienes/eliminar", function(Request $req, Response $res){
+    $router->post("/misBienes/eliminar", function(Request $req, Response $res){
 
         sleep(1);
 

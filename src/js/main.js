@@ -68,7 +68,7 @@ function getDataList() {
                 inicial: inicial
             };
             
-            const resp = await peticionPostAjax(params, 'bienes/disponibles');
+            const resp = await peticionPostAjax(params, 'bienes/obtenerTodos');
             
             let htmlBienesDisponibles = resp.data.map(function(item){
                 return plantillaBienesDisponibles(item);
@@ -117,7 +117,7 @@ function getDataList() {
 
         try {   
             
-            const resp = await peticionGetAjax('bienes/misBienes');
+            const resp = await peticionGetAjax('misBienes/obtenerTodos');
 
             let htmlMisBienes = resp.data.map(function(item){
                 return plantillaMisBienes(item.data_bienes);
@@ -155,7 +155,7 @@ function getDataList() {
                 data_bienes_id: id
             }; 
 
-            const resp = await peticionPostAjax(params, 'bienes/misBienes/guardar');
+            const resp = await peticionPostAjax(params, 'misBienes/guardar');
             messageExito(resp.message);
 
             //finalizar carga
@@ -188,7 +188,7 @@ function getDataList() {
                 data_bienes_id: id
             }; 
 
-            const resp = await peticionPostAjax(params, 'bienes/misBienes/eliminar');
+            const resp = await peticionPostAjax(params, 'misBienes/eliminar');
             messageExito(resp.message);
 
             //finalizar carga
