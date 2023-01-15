@@ -17,13 +17,16 @@ const baseUrl = document.getElementById("base_url").content;
 const loadingSpinner = {
 
     contentSpinner: $(".content-loading-spinner"),
+    state: false,
 
     start : () => {
         loadingSpinner.contentSpinner.addClass("loading-spinner-visible");
+        loadingSpinner.state = true;
     },
 
     stop: () => {
         loadingSpinner.contentSpinner.removeClass("loading-spinner-visible");
+        loadingSpinner.state = false;
     }
     
 }

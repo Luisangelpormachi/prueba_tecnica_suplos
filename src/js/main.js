@@ -1,14 +1,5 @@
 'use strict';
 
-/* Variables globales */
-let simbolos_moneda = {
-    EUR: "$",
-    COP: "$",
-    PEN: "S/"
-}
-let tasa_cambio = 1;
-let simbolo_moneda = simbolos_moneda['EUR']
-
 /**
  * Solo lectura (No modifica)
 */
@@ -50,9 +41,19 @@ function getDataList() {
     });
 }
 
-
 // Configurar todo dentro de este scope
-(async () => {
+(async () => {   
+
+    /* Variables globales */
+    let simbolos_moneda = {
+        EUR: "$",
+        COP: "$",
+        PEN: "S/"
+    }
+    let tasa_cambio = 1;
+    let simbolo_moneda = simbolos_moneda['EUR']
+    let offset = 0;
+    let loadMore = 1;
 
     //elegir moneda al iniciar
     Swal.fire({
@@ -65,7 +66,7 @@ function getDataList() {
             PEN: 'SOLES PERUANOS',
           },
         },
-        showCancelButton: true,
+        allowOutsideClick: false,
         inputValidator: (value) => {
           return new Promise((resolve) => {
             
@@ -102,7 +103,7 @@ function getDataList() {
 
     }    
 
-    async function obtenerBienesDisponibles(inicial = false) {
+    async function obtenerBienesDisponibles(inicial = false, scroll = false) {
 
         //iniciar carga
         loadingSpinner.start(true);
@@ -119,16 +120,49 @@ function getDataList() {
                 ciudad: form.ciudad.value,
                 tipo: form.tipo.value,
                 precios: JSON.stringify(form.precio.value.split(";")),
-                inicial: inicial
+                inicial: inicial,
             };
             
-            const resp = await peticionPostAjax(params, 'bienes/obtenerTodos');
-            
-            let htmlBienesDisponibles = resp.data.map(function(item){
-                return plantillaBienesDisponibles(item);
-            }).join("");
+            let resp;
 
-            $("#divResultadosBusquedaDisponibles .card").html(`<h5>Resultados de la búsquedas:</h5>${htmlBienesDisponibles}`);
+            if(scroll) {
+            
+                params.offset = offset;
+
+                resp = await peticionPostAjax(params, 'bienes/obtenerTodos');
+                offset += resp.data.length;
+                loadMore = resp.data.length;
+
+                let htmlBienesDisponibles = resp.data.map(function(item){
+                    return plantillaBienesDisponibles(item);
+                }).join("");
+
+                $("#divResultadosBusquedaDisponibles .card").append(`${htmlBienesDisponibles}`);
+
+            } else {
+
+                offset = 0;
+                params.offset = 0;
+
+                resp = await peticionPostAjax(params, 'bienes/obtenerTodos');
+                offset += resp.data.length;
+
+                let htmlBienesDisponibles;
+
+                if(offset > 0){
+
+                    htmlBienesDisponibles = resp.data.map(function(item){
+                        return plantillaBienesDisponibles(item);
+                    }).join("");
+
+                } else {
+                    htmlMisBienes = "<p>No hay registros encontrados</p>";
+                }
+
+                $("#divResultadosBusquedaDisponibles .card").html(`<h5>Resultados de la búsquedas:</h5>${htmlBienesDisponibles}`);
+
+            }
+
 
             //cargar filtros si es que se cargo por primera vez
             if(inicial){
@@ -161,7 +195,7 @@ function getDataList() {
     
     };
 
-    async function obtenerBienesMisBienes() {
+    async function obtenerMisBienes(scroll = false) {
 
         //iniciar carga
         loadingSpinner.start(true);
@@ -170,14 +204,46 @@ function getDataList() {
         actions.disabled();
 
         try {   
+
+            let resp;
+            const params = {};
+
+            if(scroll) {
             
-            const resp = await peticionGetAjax('misBienes/obtenerTodos');
+                params.offset = offset;
 
-            let htmlMisBienes = resp.data.map(function(item){
-                return plantillaMisBienes(item.data_bienes);
-            }).join("");
+                resp = await peticionPostAjax(params, 'misBienes/obtenerTodos');
 
-            $("#divResultadosBusquedaMisBienes .card").html(`<h5>Bienes guardados:</h5>${htmlMisBienes}`);
+                offset += resp.data.length;
+                loadMore = resp.data.length;
+
+                let htmlMisBienes = resp.data.map(function(item){
+                    return plantillaMisBienes(item.data_bienes);
+                }).join("");
+
+                $("#divResultadosBusquedaMisBienes .card").append(`${htmlMisBienes}`);
+
+            } else {
+
+                offset = 0;
+                params.offset = 0;
+                
+                resp = await peticionPostAjax(params, 'misBienes/obtenerTodos');
+
+                offset += resp.data.length;
+                let htmlMisBienes;
+
+                if(offset > 0){
+                    htmlMisBienes = resp.data.map(function(item){
+                        return plantillaMisBienes(item.data_bienes);
+                    }).join("");
+                } else {
+                    htmlMisBienes = "<p>No hay registros encontrados</p>";
+                }
+    
+                $("#divResultadosBusquedaMisBienes .card").html(`<h5>Bienes guardados:</h5>${htmlMisBienes}`);
+
+            }
 
             //finalizar carga
             loadingSpinner.stop(true);
@@ -250,7 +316,7 @@ function getDataList() {
             //habilitar acciones
             actions.enable();
             
-            obtenerBienesMisBienes();
+            obtenerMisBienes(false);
 
         } catch (error) {
             messageError(error);
@@ -328,22 +394,52 @@ function getDataList() {
             return price;
         }
     }
-    
+
     /* Eventos */
+    window.addEventListener("scroll", function(){
+    
+        let totalScroll = window.innerHeight + Math.ceil(window.scrollY);
+        let totalDiferencia = totalScroll - document.body.scrollHeight;
+
+        if(loadingSpinner.state == false && totalDiferencia >= 100 && loadMore > 0){
+        
+            let tab = $("#tabs").tabs("option", "active");
+
+            switch(tab) {
+
+                case 0:
+                    obtenerBienesDisponibles(false, scroll = true)
+                break;
+
+                case 1:
+                    obtenerMisBienes(scroll = true);
+                break;
+
+                default:
+                    console.log("ocurrio un error!");
+
+            }
+        }
+
+    });
+
     $("#formulario").submit(function(e) {
 
         e.preventDefault();
-        obtenerBienesDisponibles();
+        loadMore = 1;
+        obtenerBienesDisponibles(false, scroll = false);
 
     });
 
     $("#tabs").tabs({
         activate: function( event, ui ) {
+            offset = 0;
+            loadMore = 1;
             const tabIndex = ui.newTab.index();
             if (tabIndex === 0) { //Bienes disponibles
-                obtenerBienesDisponibles();
+                obtenerBienesDisponibles(false, scroll = false);
             } else if (tabIndex === 1) { //Mis disponibles
-                obtenerBienesMisBienes();
+                obtenerMisBienes(false);
             }
         }
     });

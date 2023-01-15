@@ -306,6 +306,7 @@ class DataBienesController {
                 'direccion' => $filter->direccion,
                 'precios' => json_decode($filter->precios),
                 'inicial' => $filter->inicial,
+                'offset' => $filter->offset
             ));
             $v->rule('array', 'precios');
             $v->rule('boolean', 'inicial');    
@@ -318,6 +319,7 @@ class DataBienesController {
                 $filter->tipo = htmlspecialchars($filter->tipo, ENT_QUOTES, 'UTF-8');
                 $filter->direccion = htmlspecialchars($filter->direccion, ENT_QUOTES, 'UTF-8');
                 $filter->precios = json_decode($filter->precios);
+                $offset = htmlspecialchars($filter->offset, ENT_QUOTES, 'UTF-8');
 
                 $bienes = DataBienes::where(function($query) use ($filter) {
                     if ($filter->ciudad !== '') {
@@ -331,6 +333,8 @@ class DataBienesController {
                     }
                 })
                 ->whereRaw("cast(replace(replace(precio, ',', ''), '$', '') as decimal(10,2)) between ? and ?", $filter->precios)
+                ->skip($offset)
+                ->take(10)
                 ->get();
 
                 $resp = [

@@ -74,7 +74,7 @@
 
     /* Rutas para mis bienes */
 
-    $router->get("/misBienes/obtenerTodos", function(Request $req, Response $res){
+    $router->post("/misBienes/obtenerTodos", function(Request $req, Response $res){
 
         sleep(1);
 

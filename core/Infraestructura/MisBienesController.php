@@ -152,11 +152,19 @@ class MisBienesController {
 
         try {
             
-            $misBienes = MisBienes::with('data_bienes')->get();
+            // Obtener todos los registros
+            $filter = $request->body;
+            $offset = htmlspecialchars($filter->offset, ENT_QUOTES, 'UTF-8');
+
+            $misBienes = MisBienes::with('data_bienes')
+            ->skip($offset)
+            ->take(10)
+            ->get();
 
             $resp = [
                 "message" => 'información cargada correctamente',
                 "data" => $misBienes,
+                "filter" => $filter
             ];
 
             $response->status(200)->send($resp);
