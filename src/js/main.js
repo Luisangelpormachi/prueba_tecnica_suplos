@@ -85,8 +85,6 @@ function getDataList() {
 
             //iniciar carga
             loadingSpinner.start(true);
-            //desabilitar acciones
-            actions.disabled();
 
             const response_data_coins = await mstCoins();
             tasa_cambio = response_data_coins.rates[value];
@@ -94,9 +92,7 @@ function getDataList() {
 
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
-
+            
         }
 
         obtenerBienesDisponibles(true);
@@ -107,9 +103,6 @@ function getDataList() {
 
         //iniciar carga
         loadingSpinner.start(true);
-
-        //desabilitar acciones
-        actions.disabled();
 
         try {   
 
@@ -180,17 +173,13 @@ function getDataList() {
 
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
-           
 
         } catch (error) {
             messageError(error);
             
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
+
         }
     
     };
@@ -199,9 +188,6 @@ function getDataList() {
 
         //iniciar carga
         loadingSpinner.start(true);
-
-        //desabilitar acciones
-        actions.disabled();
 
         try {   
 
@@ -247,16 +233,13 @@ function getDataList() {
 
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
            
         } catch (error) {
             messageError(error);
             
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
+
         }
     
     };
@@ -265,9 +248,6 @@ function getDataList() {
 
         //iniciar carga
         loadingSpinner.start(true);
-
-        //desabilitar acciones
-        actions.disabled();
 
         try {   
             
@@ -280,16 +260,13 @@ function getDataList() {
 
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
            
         } catch (error) {
             messageError(error);
             
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
+
         }
     
     };
@@ -298,9 +275,6 @@ function getDataList() {
 
         //iniciar carga
         loadingSpinner.start(true);
-
-        //desabilitar acciones
-        actions.disabled();
 
         try {   
             
@@ -313,8 +287,6 @@ function getDataList() {
 
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
             
             obtenerMisBienes(false);
 
@@ -323,8 +295,7 @@ function getDataList() {
             
             //finalizar carga
             loadingSpinner.stop(true);
-            //habilitar acciones
-            actions.enable();
+
         }
     
     };
@@ -426,8 +397,18 @@ function getDataList() {
     $("#formulario").submit(function(e) {
 
         e.preventDefault();
-        loadMore = 1;
-        obtenerBienesDisponibles(false, scroll = false);
+
+        let tab = $("#tabs").tabs("option", "active");
+
+        if(tab == 0){
+            loadMore = 1;
+            obtenerBienesDisponibles(false, scroll = false);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                title: "Necesitas estar en la vista de Bienes disponibles"
+            });
+        }
 
     });
 

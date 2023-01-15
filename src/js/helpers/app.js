@@ -22,11 +22,15 @@ const loadingSpinner = {
     start : () => {
         loadingSpinner.contentSpinner.addClass("loading-spinner-visible");
         loadingSpinner.state = true;
+        //desabilitar acciones
+        actions.disabled();
     },
 
     stop: () => {
         loadingSpinner.contentSpinner.removeClass("loading-spinner-visible");
         loadingSpinner.state = false;
+        //habilitar acciones
+        actions.enable();
     }
     
 }
