@@ -4,7 +4,6 @@ namespace Core\Infraestructura;
 use Core\Models\MisBienes;
 use EasyProjects\SimpleRouter\Request as Request;
 use EasyProjects\SimpleRouter\Response as Response;
-use Illuminate\Support\Facades\DB;
 use Valitron\Validator as V;
 
 class MisBienesController {
