@@ -149,7 +149,7 @@ function getDataList() {
                     }).join("");
 
                 } else {
-                    htmlMisBienes = "<p>No hay registros encontrados</p>";
+                    htmlBienesDisponibles = "<p>No hay registros encontrados</p>";
                 }
 
                 $("#divResultadosBusquedaDisponibles .card").html(`<h5>Resultados de la búsquedas:</h5>${htmlBienesDisponibles}`);
